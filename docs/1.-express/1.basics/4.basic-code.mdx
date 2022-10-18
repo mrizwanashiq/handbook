@@ -1,0 +1,206 @@
+---
+sidebar_position: 4
+id: basic-code
+title: Basic Code
+description: Let's get started with some basic code.
+slug: basic-code
+---
+
+## Create Development Environment
+
+First, you need to download Node to PC. You can download it from the official node [website](https://nodejs.org/en/) and install it on your PC. It also installs `npm` (Node Package Manager). The npm is the world's largest software registry helpful of development.
+
+After installing Node you can check that installs correctly on your PC. Open cmd and type the below command.
+
+```bash
+node -v
+```
+If your correctly installed Node, it gives the node version that you currently installed. If you type the below command, you can see the version of npm installed on your PC.
+
+```bash
+npm -v
+```
+
+`yarn` is another popular package manager. You can install it using the following command.
+
+```bash
+npm install -g yarn
+```
+
+Next, you need to download IDE or code editor to develop your node project. You can use like [VS Code](https://code.visualstudio.com/), or [WebStorm](https://www.jetbrains.com/webstorm/download/) or anyone else. VS Code is the most popular code editor in the world. It is lightweight software, and it's easy to manage our project. You can download it from the [link](https://code.visualstudio.com/).
+
+## Start Build Your Project
+Let's start building our first express project.
+
+### Create a New Project
+You can create a folder to develop the project. I name this folder as `myFirstApp`. Next, you need to open that directory from your IDE. After that, you need to open a new Terminal. You can see Terminal in the menu bar, click it and select New Terminal in the drop-down menu. Now you can type the init command in the Terminal.
+
+```bash npm2yarn
+npm init
+```
+
+It asks for some information about your project. Author name, description of the project, license going to use, git repository like information. You can set default values by pressing enter. As you can see in your myFirstApp folder a new file was created called `package.json`. If you open this file you can see information about the project.
+
+```json title="package.json"
+{
+    "name": "myfirstapp",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC"
+}
+```
+
+The `main` (`"main": "index.js"`) is the entry point of your when you run the application. By default, it entered a file called `index.js`. You can change it into anything like `server.js`. And add this key value in `package.json` file
+
+
+I like to add `"type": "module"` in package.json, it is a key value that tells the system that your project is a module. You can change it into `"application"` if you want to create a web application.
+
+```json title="package.json"
+{
+    //...
+    "type": "module",
+    //...
+}
+```
+
+### Install Dependencies
+Now, we need to install a dependency called `express`. It is a backend web application framework for NodeJS. It is helpful for developing web applications and APIs. Express JS gives useful features for development. You can install Express using the below command by typing in the Terminal.
+
+```bash
+npm install express
+```
+
+After installing the Express you can see a new element called `dependencies` inside `package.json`. Inside that, you can see installed dependencies and their versions.
+
+```json title="package.json"
+{
+    //...
+    "dependencies": {
+        "express": "^4.17.1"
+    }
+    //...
+}
+```
+
+:::note Note
+You can install dependencies using `npm install` or `npm i` command. You can also install dependencies as a development dependency using `npm install --save-dev` or `npm i -D` command.
+:::
+
+### Create a file named `index.js`
+
+Next, we need to create a file called `index.js` to write the server-side implementation. You can create this file inside the myFirstApp directory. Now your file structure is like the below.
+```bash
+|_ myFirstApp
+
+    |_ index.js
+
+    |_ node_modules
+
+    |_ package-lock.json
+
+    |_ package.json
+```
+Inside the `index.js` file you need to implement codes like the below example.
+```js
+import express from 'express';
+
+const app = express();
+
+/**
+ * The first line here is grabbing the main Express module from the package you installed. 
+ * This module is a function, which we then run on the second line to create our app variable. 
+ * You can create multiple apps this way, each with its own requests and responses.
+ */
+
+app.get('/', (req, res) => {
+    res.send('Hello World!')
+})
+
+/**
+ * These lines of code are where we tell our Express server how to handle a GET request to our server.
+ * Express includes similar functions for POST, PUT, PATCH, DELETE, etc. using app.post(...), app.put(...), etc.
+ * 
+ * These functions take two main parameters. The first is the URL for this function to act upon. 
+ * In this case, we are targeting '/', which is the root of our website: in this case, localhost:3000.
+ * 
+ * The second parameter is a function with two arguments: req, and res. 
+ * req represents the request that was sent to the server; We can use this object to read data about what the client is requesting to do. 
+ * res represents the response that we will send back to the client.
+ * Here, we are calling a function on res to send back a response: 'Successful response.'.
+ */
+
+app.listen(5000, function () {
+    console.log('Started application on port 5000');
+});
+
+/**
+ * Finally, once we've set up our requests, we must start our server! 
+ * We are passing 3000 into the listen function, which tells the app which port to listen on. 
+ * The function passed in as the second parameter is optional and runs when the server starts up. 
+ * This provides us some feedback in the console to know that our application is running.
+ */
+```
+To start this project, you need to do a small change inside `package.json`. You need to add below `script` element.
+
+```json
+"start": "node index.js"
+```
+    
+Then, you can run your project by typing in the Terminal.
+    
+```bash
+npm run start
+```
+
+Our application runs on port no 5000. If you call http://localhost:5000/ in your browser you can see `Hello World!`.
+
+## Nodemon
+
+Nodemon restarts the server automatically when you save a file that's used by the `index.js`. We can install Nodemon with the following command:
+
+    npm install nodemon --save-dev
+
+We use a `--save-dev` flag here because we only use Nodemon when we are developing stuff. We won't use Nodemon on an actual server. `--save-dev` here adds Nodemon as a `devDependency` in the `package.json` file.
+
+Nodemon behaves like Node. So you can run `nodemon index.js` and you'd expect to see the same thing. Unfortunately, this only works if you've installed nodemon globally with the -g flag.
+```bash
+npm install nodemon -g
+```
+We have other ways to run Nodemon. For example, you can execute Nodemon directly from the node_modules folder. This is super unwieldy, but it works:
+```bash
+nodemon index.js
+```
+We can make things simpler by adding the script key in the package.json file. This lets us run `nodemon index.js` without the `./node_modules...` preamble.
+```json
+"scripts": {
+    "dev": "nodemon index.js"
+}
+```
+Now, you can run npm run dev to trigger `nodemon index.js`.
+```bash
+nodemon index.js
+```
+## Basics of API Testing Using Postman
+
+APIs(Application Programming Interfaces) are very commonly used in development. Postman is a tool that can be used for API Testing. Here, we will learn how to do simple API Testing using Postman.
+
+1. First of all, [download](https://www.postman.com/downloads/) and install postman.
+2. Go to your workspace in Postman.
+3. Click on the + symbol to open a new tab.
+4. Enter the API Endpoint where it says, "Enter request URL" and select the method (action type `GET`, `POST`, `PUT`, `DELETE`, etc.) for that request as shown below.
+5. Click on the Send button.
+
+![image](https://user-images.githubusercontent.com/27571455/180705218-b8e63705-4c86-4604-9c37-3d05cdca061b.png)
+
+As you can see in the image above, status 200 is received implying that the request was successful and the resource has been fetched.  More information related to the API call can be found under the `Headers`. You can also save the request by clicking on the save button and adding it to a collection in Postman. 
+
+## Code
+
+You can download the related code from [here](https://github.com/mrizwanashiq/learning-express-js/tree/example/basic-code)
+
+***

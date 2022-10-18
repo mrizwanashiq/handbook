@@ -1,0 +1,82 @@
+---
+sidebar_position: 5
+id: joi
+title: Validation using Joi
+# description: 
+slug: joi
+---
+
+When we write backend code that interacts with end-users and takes and processes data from requests, we have to be super careful to put up some form of protection that filters out invalid data. For example, if we store the date of birth of a user in our database, then we cannot allow a value that is not a date to be stored, because it is not what we intend to be present and can lead to strange behavior.
+
+To mitigate this, we can set up filters that analyze each and every data key sent by the frontend. We can do this all by ourselves without using a third-party library.
+Assume in our code we want to check whether there is a key called parameterX which lies between 100 and 1000.
+```js
+if (!data.parameterX) {
+    throw new Error('parameterX is required');
+}
+
+try {
+    const value = parseInt(data.parameterX);
+    if (value < 100 || value > 1000) {
+        throw new Error('parameterX must be between 100 and 1000');
+    }
+} catch (e) {
+    throw new Error('parameterX must be an integer');
+}
+```
+This is a very simple example, but it is not the only way to do it. We can use the Joi library to do this.
+```js
+const schema = Joi.object().keys({
+    parameterX: Joi.number().min(100).max(1000).required()
+});
+
+const { error } = Joi.validate(data, schema);
+if (error) {
+    throw new Error(error.details[0].message);
+}
+```
+## Step 1: Install Joi
+First, we need to install Joi.
+```bash
+npm install joi
+```
+## Step 2: Create a schema
+We can create a schema using the Joi library.
+```js
+const schema = Joi.object().keys({
+    parameterX: Joi.number().min(100).max(1000).required()
+});
+```
+## Step 3: Validate data
+We will use it as middleware to validate data. Means before going to backend code, we will check if the data is valid. 
+
+For validation, there are two ways to do it using Joi. 
+
+1. The first way is to use the `schema.validate` method. It takes the data as an argument and returns an object with the data and the error.
+2. The second way is to use the `Joi.compile(schema).validate` method. It takes the data as an argument and returns an object with the data and the error. In this case we can validate body, query, params, headers, and cookies in one go. That means we can use the same schema for all of them.
+
+For now, we will use the first way. But in later example we will use the second way.
+
+```js
+const { error } = schema.validate(data);
+
+if (error) {
+    throw new Error(error.details[0].message);
+}
+```
+### If data is invalid
+If the data is invalid, I will throw an error, and that's it. It will not go to the backend code. 
+```js
+if (error) {
+    throw new Error(error.details[0].message);
+}
+```
+### If data is valid
+If the data is valid, I will go to the next middleware. 
+```js
+if (!error) {
+    next();
+}
+```
+# Code
+You can download the related code from [here](https://github.com/mrizwanashiq/learning-express-js/tree/example/validation-with-joi)
