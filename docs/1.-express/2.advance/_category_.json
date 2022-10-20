@@ -1,8 +1,0 @@
-{
-  "label": "Advance",
-  "position": 3,
-  "link": {
-    "type": "generated-index",
-    "description": "Here we'll learn routing, MongoDB, CRUD using MongoDB, JWT (JSON Web Token), Joi"
-  }
-}
